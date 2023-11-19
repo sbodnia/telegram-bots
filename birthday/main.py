@@ -13,7 +13,7 @@ database.init_db()
 
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
-    bot.reply_to(message, "Привіт, котику!🥰\nЯ бот, яка може допомогти тобі запамʼятати Дні Народження у нашому чатику!😘\n\nДля встановлення нагадування треба запустити наступну команду\n\n команду /reminder DD-MM username/nickname 😊\n\nПо можливості, використовуйте юзернейм людинки😊\n\nА також ти можеш дізнатися усі записи про Дні Народження цього чатику за допомогою команди /allbirthdays")
+    bot.reply_to(message, "Привіт, котику!🥰\nЯ бот, яка може допомогти тобі запамʼятати Дні Народження у нашому чатику!😘\n\nДля встановлення нагадування треба запустити наступну команду\n\n команду /add DD-MM nickname 😊\n\nА також ти можеш дізнатися усі записи про Дні Народження цього чатику за допомогою команди /all")
 
 # Function: add new birthday
 @bot.message_handler(commands=['add'])
@@ -24,7 +24,7 @@ def handle_reminder(message):
         database.create_reminder(message.chat.id, message.from_user.id, nickname, date_str)
         bot.reply_to(message, "Нагадування встановлено!😎")
     except Exception as e:
-        bot.reply_to(message, "Помилочка сталася!😱\nВикористовуй формат: /reminder DD-MM nickname")
+        bot.reply_to(message, "Помилочка сталася!😱\nВикористовуй формат: /add DD-MM nickname")
 
 # Function: send notify
 def send_reminders():
@@ -50,14 +50,15 @@ def handle_delete_birthday(message):
         database.delete_birthday(chat_id, name)
         bot.reply_to(message, f"День Народження {name} видалено😓")
     except ValueError:
-        bot.reply_to(message, "Покажи мені кого треба видалити із записів командою у форматі\n/deletebirthday username/nickname")
+        bot.reply_to(message, "Покажи мені кого треба видалити із записів командою у форматі\n/delete nickname")
     except Exception as e:
         bot.reply_to(message, f"Помилочка сталася!😱: {e}")
 
 # Cron
 scheduler = BackgroundScheduler()
 scheduler.add_job(send_reminders, 'cron', hour=10, timezone=timezone(TIMEZONE))
+scheduler.add_job(send_reminders, 'cron', hour=12, timezone=timezone(TIMEZONE))
 scheduler.start()
 
 if __name__ == '__main__':
-    bot.polling(none_stop=True)
+    bot.infinity_polling()

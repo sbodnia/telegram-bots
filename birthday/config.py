@@ -1,5 +1,5 @@
 # Token from BotFather
-TOKEN = 'PASTE YOUR TOKEN HERE'
+TOKEN = '6432472445:AAEm7-TbBcVGi2SH3vLYGw-jZQwn9xtPO1w'
 
 # Your timezone
 TIMEZONE = 'Europe/Kyiv'
